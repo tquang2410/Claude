@@ -15,22 +15,23 @@ namespace QuanLyNhanVien.Forms
 {
     public partial class frmNhanVien : Form
     {
-        private List<NhanVien> listNV = new List<NhanVien>();
         private bool isThemMoi = false;
-        private FileAccess fileAccess = new FileAccess();
+        private FileAccess fileAccess;
         private FileAccessPhongBan fileAccessPB;
+
         public frmNhanVien()
         {
             InitializeComponent();
-
-            // Khởi tạo các đối tượng quản lý dữ liệu
             fileAccess = new FileAccess();
             fileAccessPB = new FileAccessPhongBan();
-            listNV = new List<NhanVien>();
 
-            // Cấu hình DataGridView
+            // Load dữ liệu từ file và cập nhật vào DataManager
+            var data = fileAccess.LoadData();
+            DataManager.Instance.DanhSachNhanVien = data;
+
             InitializeDataGridView();
         }
+
         private void InitializeDataGridView()
         {
             // Cấu hình cơ bản cho DataGridView
@@ -56,8 +57,6 @@ namespace QuanLyNhanVien.Forms
         {
             try
             {
-                // Load dữ liệu
-                listNV = fileAccess.LoadData();
                 LoadPhongBanToComboBox();
 
                 // Khởi tạo các controls
@@ -81,6 +80,7 @@ namespace QuanLyNhanVien.Forms
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private void LoadPhongBanToComboBox()
         {
             try
@@ -109,62 +109,9 @@ namespace QuanLyNhanVien.Forms
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void btnTimKiemNC_Click(object sender, EventArgs e)
-        {
-            var ketQua = listNV;
 
-            // Lọc theo ngày sinh
-            ketQua = ketQua.Where(nv =>
-                nv.NgaySinh.Date >= dtpTuNgay.Value.Date &&
-                nv.NgaySinh.Date <= dtpDenNgay.Value.Date).ToList();
-
-            // Lọc theo phòng ban nếu có chọn
-            if (!string.IsNullOrEmpty(cboLocPhongBan.Text))
-            {
-                ketQua = ketQua.Where(nv => nv.PhongBan == cboLocPhongBan.Text).ToList();
-            }
-
-            // Hiển thị kết quả
-            dgvNhanVien.Rows.Clear();
-            foreach (var nv in ketQua)
-            {
-                int rowIndex = dgvNhanVien.Rows.Add();
-                dgvNhanVien.Rows[rowIndex].Cells["MaNV"].Value = nv.MaNV;
-                dgvNhanVien.Rows[rowIndex].Cells["HoTen"].Value = nv.HoTen;
-                dgvNhanVien.Rows[rowIndex].Cells["NgaySinh"].Value = nv.NgaySinh.ToShortDateString();
-                dgvNhanVien.Rows[rowIndex].Cells["GioiTinh"].Value = nv.GioiTinh ? "Nam" : "Nữ";
-                dgvNhanVien.Rows[rowIndex].Cells["PhongBan"].Value = nv.PhongBan;
-                dgvNhanVien.Rows[rowIndex].Cells["DiaChi"].Value = nv.DiaChi;
-                dgvNhanVien.Rows[rowIndex].Cells["SDT"].Value = nv.SDT;
-            }
-        }
-
-        private void btnHuyTimKiem_Click(object sender, EventArgs e)
-        {
-            dtpTuNgay.Value = DateTime.Now.AddYears(-50);
-            dtpDenNgay.Value = DateTime.Now;
-            cboLocPhongBan.SelectedIndex = -1;
-            LoadDataGridView();
-        }
-
-        private void btnBaoCao_Click(object sender, EventArgs e)
-        {
-            frmBaoCao frm = new frmBaoCao(listNV);
-            frm.ShowDialog();
-        }
-
-        private void label4_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void grpChucNang_Enter(object sender, EventArgs e)
-        {
-
-        }
         private void SetControlStatus(bool edit)
         {
-            // Set trạng thái các controls
             txtMaNV.Enabled = edit;
             txtHoTen.Enabled = edit;
             dtpNgaySinh.Enabled = edit;
@@ -174,18 +121,18 @@ namespace QuanLyNhanVien.Forms
             txtDiaChi.Enabled = edit;
             txtSDT.Enabled = edit;
 
-            // THAY ĐỔI DÒNG NÀY:
-            // Các nút Thêm, Sửa, Xóa luôn Enabled = true
-            btnThem.Enabled = true;  // thay vì !edit
-            btnSua.Enabled = true;   // thay vì !edit
-            btnXoa.Enabled = true;   // thay vì !edit
+            btnThem.Enabled = true;
+            btnSua.Enabled = true;
+            btnXoa.Enabled = true;
 
             btnLuu.Enabled = edit;
             btnHuy.Enabled = edit;
         }
+
         private void LoadDataGridView()
         {
             dgvNhanVien.Rows.Clear();
+            var listNV = DataManager.Instance.DanhSachNhanVien;
             foreach (var nv in listNV)
             {
                 int rowIndex = dgvNhanVien.Rows.Add();
@@ -198,6 +145,7 @@ namespace QuanLyNhanVien.Forms
                 dgvNhanVien.Rows[rowIndex].Cells["SDT"].Value = nv.SDT;
             }
         }
+
         private void ClearInputs()
         {
             txtMaNV.Clear();
@@ -223,7 +171,7 @@ namespace QuanLyNhanVien.Forms
             {
                 isThemMoi = false;
                 SetControlStatus(true);
-                txtMaNV.Enabled = false; // Không cho sửa mã NV
+                txtMaNV.Enabled = false;
             }
         }
 
@@ -235,7 +183,10 @@ namespace QuanLyNhanVien.Forms
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     string maNV = dgvNhanVien.SelectedRows[0].Cells["MaNV"].Value.ToString();
+                    var listNV = DataManager.Instance.DanhSachNhanVien.ToList();
                     listNV.RemoveAll(x => x.MaNV == maNV);
+                    DataManager.Instance.DanhSachNhanVien = listNV;
+                    fileAccess.SaveData(listNV);
                     LoadDataGridView();
                 }
             }
@@ -245,6 +196,7 @@ namespace QuanLyNhanVien.Forms
         {
             if (ValidateInputs())
             {
+                var listNV = DataManager.Instance.DanhSachNhanVien.ToList();
                 NhanVien nv = new NhanVien
                 {
                     MaNV = txtMaNV.Text,
@@ -258,23 +210,31 @@ namespace QuanLyNhanVien.Forms
 
                 if (isThemMoi)
                 {
+                    if (listNV.Any(x => x.MaNV == nv.MaNV))
+                    {
+                        MessageBox.Show("Mã nhân viên đã tồn tại!", "Lỗi",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
                     listNV.Add(nv);
                 }
                 else
                 {
-                    var existingNV = listNV.FirstOrDefault(x => x.MaNV == nv.MaNV);
-                    if (existingNV != null)
+                    var index = listNV.FindIndex(x => x.MaNV == nv.MaNV);
+                    if (index >= 0)
                     {
-                        int index = listNV.IndexOf(existingNV);
                         listNV[index] = nv;
                     }
                 }
+
+                DataManager.Instance.DanhSachNhanVien = listNV;
                 fileAccess.SaveData(listNV);
                 LoadDataGridView();
                 SetControlStatus(false);
                 ClearInputs();
-                MessageBox.Show("Thêm thành công"); // Thêm dòng này để test
-                return;
+
+                MessageBox.Show("Lưu thành công!", "Thông báo",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -313,37 +273,10 @@ namespace QuanLyNhanVien.Forms
             return true;
         }
 
-        private void dgvNhanVien_SelectionChanged(object sender, EventArgs e)
-        {
-            if (dgvNhanVien.SelectedRows.Count > 0 && dgvNhanVien.SelectedRows[0].Cells["MaNV"].Value != null)
-            {
-                var row = dgvNhanVien.SelectedRows[0];
-                txtMaNV.Text = row.Cells["MaNV"].Value.ToString();
-                txtHoTen.Text = row.Cells["HoTen"].Value.ToString();
-                dtpNgaySinh.Value = DateTime.Parse(row.Cells["NgaySinh"].Value.ToString());
-                radNam.Checked = row.Cells["GioiTinh"].Value.ToString() == "Nam";
-                radNu.Checked = !radNam.Checked;
-                cboPhongBan.Text = row.Cells["PhongBan"].Value.ToString();
-                txtDiaChi.Text = row.Cells["DiaChi"].Value.ToString();
-                txtSDT.Text = row.Cells["SDT"].Value.ToString();
-            }
-        }
-
-
-
-        private void dgvNhanVien_SelectionChanged(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
-        private void groupBox1_Enter(object sender, EventArgs e)
-        {
-
-        }
-
         private void btnTimKiem_Click(object sender, EventArgs e)
         {
             string tuKhoa = txtTimKiem.Text.Trim().ToLower();
+            var listNV = DataManager.Instance.DanhSachNhanVien;
             List<NhanVien> ketQua = new List<NhanVien>();
 
             switch (cboTimKiem.Text)
@@ -373,62 +306,51 @@ namespace QuanLyNhanVien.Forms
             }
         }
 
-        private void btnXuatExcel_Click(object sender, EventArgs e)
+        private void btnTimKiemNC_Click(object sender, EventArgs e)
         {
-            using (SaveFileDialog sfd = new SaveFileDialog())
+            var listNV = DataManager.Instance.DanhSachNhanVien;
+            var ketQua = listNV.Where(nv =>
+                nv.NgaySinh.Date >= dtpTuNgay.Value.Date &&
+                nv.NgaySinh.Date <= dtpDenNgay.Value.Date &&
+                (cboLocPhongBan.Text == "" || nv.PhongBan == cboLocPhongBan.Text)
+            ).ToList();
+
+            dgvNhanVien.Rows.Clear();
+            foreach (var nv in ketQua)
             {
-                sfd.Filter = "Excel Files|*.xlsx";
-                sfd.FileName = "DanhSachNhanVien.xlsx";
-
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    try
-                    {
-                        using (var workbook = new ClosedXML.Excel.XLWorkbook())
-                        {
-                            var worksheet = workbook.Worksheets.Add("Nhân viên");
-
-                            // Thêm tiêu đề
-                            worksheet.Cell("A1").Value = "Mã NV";
-                            worksheet.Cell("B1").Value = "Họ tên";
-                            worksheet.Cell("C1").Value = "Ngày sinh";
-                            worksheet.Cell("D1").Value = "Giới tính";
-                            worksheet.Cell("E1").Value = "Phòng ban";
-                            worksheet.Cell("F1").Value = "Địa chỉ";
-                            worksheet.Cell("G1").Value = "SĐT";
-
-                            // Thêm dữ liệu
-                            int row = 2;
-                            foreach (var nv in listNV)
-                            {
-                                worksheet.Cell($"A{row}").Value = nv.MaNV;
-                                worksheet.Cell($"B{row}").Value = nv.HoTen;
-                                worksheet.Cell($"C{row}").Value = nv.NgaySinh.ToShortDateString();
-                                worksheet.Cell($"D{row}").Value = nv.GioiTinh ? "Nam" : "Nữ";
-                                worksheet.Cell($"E{row}").Value = nv.PhongBan;
-                                worksheet.Cell($"F{row}").Value = nv.DiaChi;
-                                worksheet.Cell($"G{row}").Value = nv.SDT;
-                                row++;
-                            }
-
-                            worksheet.Columns().AdjustToContents();
-                            workbook.SaveAs(sfd.FileName);
-                        }
-                        MessageBox.Show("Xuất Excel thành công!", "Thông báo",
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Lỗi: {ex.Message}", "Lỗi",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
+                int rowIndex = dgvNhanVien.Rows.Add();
+                dgvNhanVien.Rows[rowIndex].Cells["MaNV"].Value = nv.MaNV;
+                dgvNhanVien.Rows[rowIndex].Cells["HoTen"].Value = nv.HoTen;
+                dgvNhanVien.Rows[rowIndex].Cells["NgaySinh"].Value = nv.NgaySinh.ToShortDateString();
+                dgvNhanVien.Rows[rowIndex].Cells["GioiTinh"].Value = nv.GioiTinh ? "Nam" : "Nữ";
+                dgvNhanVien.Rows[rowIndex].Cells["PhongBan"].Value = nv.PhongBan;
+                dgvNhanVien.Rows[rowIndex].Cells["DiaChi"].Value = nv.DiaChi;
+                dgvNhanVien.Rows[rowIndex].Cells["SDT"].Value = nv.SDT;
             }
         }
 
-        private void grpThongTin_Enter(object sender, EventArgs e)
+        private void btnHuyTimKiem_Click(object sender, EventArgs e)
         {
+            dtpTuNgay.Value = DateTime.Now.AddYears(-50);
+            dtpDenNgay.Value = DateTime.Now;
+            cboLocPhongBan.SelectedIndex = -1;
+            LoadDataGridView();
+        }
 
+        private void dgvNhanVien_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dgvNhanVien.SelectedRows.Count > 0 && dgvNhanVien.SelectedRows[0].Cells["MaNV"].Value != null)
+            {
+                var row = dgvNhanVien.SelectedRows[0];
+                txtMaNV.Text = row.Cells["MaNV"].Value.ToString();
+                txtHoTen.Text = row.Cells["HoTen"].Value.ToString();
+                dtpNgaySinh.Value = DateTime.Parse(row.Cells["NgaySinh"].Value.ToString());
+                radNam.Checked = row.Cells["GioiTinh"].Value.ToString() == "Nam";
+                radNu.Checked = !radNam.Checked;
+                cboPhongBan.Text = row.Cells["PhongBan"].Value.ToString();
+                txtDiaChi.Text = row.Cells["DiaChi"].Value.ToString();
+                txtSDT.Text = row.Cells["SDT"].Value.ToString();
+            }
         }
 
         private void btnSapXep_Click(object sender, EventArgs e)
@@ -440,60 +362,31 @@ namespace QuanLyNhanVien.Forms
                 return;
             }
 
-            // Sắp xếp danh sách
+            var listNV = DataManager.Instance.DanhSachNhanVien.ToList();
+
             switch (cboSapXep.Text)
             {
                 case "Mã nhân viên":
-                    if (radTangDan.Checked)
-                        listNV = listNV.OrderBy(x => x.MaNV).ToList();
-                    else
-                        listNV = listNV.OrderByDescending(x => x.MaNV).ToList();
+                    listNV = radTangDan.Checked ?
+                        listNV.OrderBy(x => x.MaNV).ToList() :
+                        listNV.OrderByDescending(x => x.MaNV).ToList();
                     break;
 
                 case "Họ tên":
-                    if (radTangDan.Checked)
-                        listNV = listNV.OrderBy(x => x.HoTen).ToList();
-                    else
-                        listNV = listNV.OrderByDescending(x => x.HoTen).ToList();
+                    listNV = radTangDan.Checked ?
+                        listNV.OrderBy(x => x.HoTen).ToList() :
+                        listNV.OrderByDescending(x => x.HoTen).ToList();
                     break;
 
                 case "Ngày sinh":
-                    if (radTangDan.Checked)
-                        listNV = listNV.OrderBy(x => x.NgaySinh).ToList();
-                    else
-                        listNV = listNV.OrderByDescending(x => x.NgaySinh).ToList();
+                    listNV = radTangDan.Checked ?
+                        listNV.OrderBy(x => x.NgaySinh).ToList() :
+                        listNV.OrderByDescending(x => x.NgaySinh).ToList();
                     break;
             }
 
+            DataManager.Instance.DanhSachNhanVien = listNV;
             LoadDataGridView();
-        }
-
-        private void mnuDoiMatKhau_Click(object sender, EventArgs e)
-        {
-            frmDoiMatKhau frm = new frmDoiMatKhau();
-            frm.ShowDialog();
-        }
-
-        private void mnuDangXuat_Click(object sender, EventArgs e)
-        {
-            if (MessageBox.Show("Bạn có chắc muốn đăng xuất?", "Xác nhận",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-            {
-                Program.CurrentUser = null;
-                this.Close();
-
-                frmDangNhap frm = new frmDangNhap();
-                frm.Show();
-            }
-        }
-
-        private void mnuThoat_Click(object sender, EventArgs e)
-        {
-            if (MessageBox.Show("Bạn có chắc muốn thoát chương trình?", "Xác nhận",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-            {
-                Application.Exit();
-            }
         }
 
         private void btnImport_Click(object sender, EventArgs e)
@@ -505,12 +398,12 @@ namespace QuanLyNhanVien.Forms
                 {
                     try
                     {
+                        var listNV = DataManager.Instance.DanhSachNhanVien.ToList();
                         using (var workbook = new ClosedXML.Excel.XLWorkbook(ofd.FileName))
                         {
                             var worksheet = workbook.Worksheet(1);
                             var rows = worksheet.RowsUsed();
 
-                            // Bỏ qua dòng header
                             foreach (var row in rows.Skip(1))
                             {
                                 NhanVien nv = new NhanVien
@@ -526,8 +419,9 @@ namespace QuanLyNhanVien.Forms
                                 listNV.Add(nv);
                             }
                         }
-                        LoadDataGridView();
+                        DataManager.Instance.DanhSachNhanVien = listNV;
                         fileAccess.SaveData(listNV);
+                        LoadDataGridView();
                         MessageBox.Show("Import dữ liệu thành công!", "Thông báo",
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -551,6 +445,7 @@ namespace QuanLyNhanVien.Forms
                 {
                     try
                     {
+                        var listNV = DataManager.Instance.DanhSachNhanVien;
                         using (var workbook = new ClosedXML.Excel.XLWorkbook())
                         {
                             var worksheet = workbook.Worksheets.Add("Nhân viên");
@@ -597,13 +492,5 @@ namespace QuanLyNhanVien.Forms
                 }
             }
         }
-
-        private void mnuBackupRestore_Click(object sender, EventArgs e)
-        {
-            frmBackupRestore frm = new frmBackupRestore();
-            frm.ShowDialog();
-        }
-
-  
     }
 }

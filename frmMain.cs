@@ -61,8 +61,8 @@ namespace QuanLyNhanVien
 
         private void mnuBaoCaoNhanVien_Click(object sender, EventArgs e)
         {
-            frmBaoCao frm = new frmBaoCao(listNV);
-            frm.ShowDialog();
+            frmBaoCao frm = new frmBaoCao();
+            frm.Show();  // Sử dụng Show() thay vì ShowDialog() để có thể xem đồng thời với form chính
         }
 
 

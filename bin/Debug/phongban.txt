@@ -1,6 +1,6 @@
-101|Admin|Không|0
+101|Admin|Không|1
 102|Wang||0
-103|Phòng kế toán|Không|0
+103|Phòng kế toán|Không|1
 104|Phòng hành chính|PHC|0
 105|Phòng nhân sự|PNS|0
-TLC|Phòng vệ sinh|0|0
+TLC|Phòng vệ sinh|0|1

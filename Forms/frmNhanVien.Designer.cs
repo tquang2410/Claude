@@ -115,7 +115,7 @@
             this.grpThongTin.TabIndex = 0;
             this.grpThongTin.TabStop = false;
             this.grpThongTin.Text = "Thông tin nhân viên";
-            this.grpThongTin.Enter += new System.EventHandler(this.grpThongTin_Enter);
+     
             // 
             // cboPhongBan
             // 
@@ -222,7 +222,7 @@
             this.label4.Size = new System.Drawing.Size(47, 13);
             this.label4.TabIndex = 3;
             this.label4.Text = "Giới tính";
-            this.label4.Click += new System.EventHandler(this.label4_Click);
+   
             // 
             // label3
             // 
@@ -264,7 +264,7 @@
             this.grpChucNang.TabIndex = 1;
             this.grpChucNang.TabStop = false;
             this.grpChucNang.Text = "Quản lý nhân viên";
-            this.grpChucNang.Enter += new System.EventHandler(this.grpChucNang_Enter);
+            
             // 
             // btnHuy
             // 
@@ -384,7 +384,7 @@
             this.grpTimKiem.TabIndex = 3;
             this.grpTimKiem.TabStop = false;
             this.grpTimKiem.Text = "Tìm kiếm";
-            this.grpTimKiem.Enter += new System.EventHandler(this.groupBox1_Enter);
+     
             // 
             // btnTimKiem
             // 
@@ -563,28 +563,28 @@
             this.mnuDoiMatKhau.Name = "mnuDoiMatKhau";
             this.mnuDoiMatKhau.Size = new System.Drawing.Size(180, 22);
             this.mnuDoiMatKhau.Text = "Đổi mật khẩu";
-            this.mnuDoiMatKhau.Click += new System.EventHandler(this.mnuDoiMatKhau_Click);
+     
             // 
             // mnuDangXuat
             // 
             this.mnuDangXuat.Name = "mnuDangXuat";
             this.mnuDangXuat.Size = new System.Drawing.Size(180, 22);
             this.mnuDangXuat.Text = "Đăng xuất";
-            this.mnuDangXuat.Click += new System.EventHandler(this.mnuDangXuat_Click);
+          
             // 
             // mnuThoat
             // 
             this.mnuThoat.Name = "mnuThoat";
             this.mnuThoat.Size = new System.Drawing.Size(180, 22);
             this.mnuThoat.Text = "Thoát";
-            this.mnuThoat.Click += new System.EventHandler(this.mnuThoat_Click);
+        
             // 
             // mnuBackupRestore
             // 
             this.mnuBackupRestore.Name = "mnuBackupRestore";
             this.mnuBackupRestore.Size = new System.Drawing.Size(180, 22);
             this.mnuBackupRestore.Text = "Backup/Restore";
-            this.mnuBackupRestore.Click += new System.EventHandler(this.mnuBackupRestore_Click);
+        
             // 
             // menuStrip1
             // 

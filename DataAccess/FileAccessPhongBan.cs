@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using QuanLyNhanVien.Models;
 
 namespace QuanLyNhanVien.DataAccess
@@ -60,6 +61,16 @@ namespace QuanLyNhanVien.DataAccess
             catch (Exception)
             {
                 // Handle any file saving errors
+            }
+        }
+        public void CapNhatSoNhanVien(string tenPhong, int soLuong)
+        {
+            var listPB = LoadData();
+            var phongBan = listPB.FirstOrDefault(p => p.TenPhong == tenPhong);
+            if (phongBan != null)
+            {
+                phongBan.SoNhanVien = soLuong;
+                SaveData(listPB);
             }
         }
     }

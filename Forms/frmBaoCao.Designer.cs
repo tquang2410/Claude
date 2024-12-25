@@ -29,16 +29,16 @@
         private void InitializeComponent()
         {
             this.dgvThongKe = new System.Windows.Forms.DataGridView();
+            this.PhongBan = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SoLuong = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TiLe = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnBaoCao = new System.Windows.Forms.Button();
             this.btnIn = new System.Windows.Forms.Button();
             this.btnSapXepBC = new System.Windows.Forms.Button();
             this.grpThongKe = new System.Windows.Forms.GroupBox();
-            this.radPhongBan = new System.Windows.Forms.RadioButton();
-            this.radGioiTinh = new System.Windows.Forms.RadioButton();
             this.btnThongKe = new System.Windows.Forms.Button();
-            this.PhongBan = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SoLuong = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.TiLe = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.radGioiTinh = new System.Windows.Forms.RadioButton();
+            this.radPhongBan = new System.Windows.Forms.RadioButton();
             this.btnXuatWord = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvThongKe)).BeginInit();
             this.grpThongKe.SuspendLayout();
@@ -57,6 +57,21 @@
             this.dgvThongKe.Size = new System.Drawing.Size(240, 150);
             this.dgvThongKe.TabIndex = 0;
             // 
+            // PhongBan
+            // 
+            this.PhongBan.HeaderText = "Phân loại";
+            this.PhongBan.Name = "PhongBan";
+            // 
+            // SoLuong
+            // 
+            this.SoLuong.HeaderText = "Số lượng nhân viên";
+            this.SoLuong.Name = "SoLuong";
+            // 
+            // TiLe
+            // 
+            this.TiLe.HeaderText = "Tỉ lệ %";
+            this.TiLe.Name = "TiLe";
+            // 
             // btnBaoCao
             // 
             this.btnBaoCao.Location = new System.Drawing.Point(12, 191);
@@ -74,7 +89,7 @@
             this.btnIn.TabIndex = 2;
             this.btnIn.Text = "Xuất Excel";
             this.btnIn.UseVisualStyleBackColor = true;
-            this.btnIn.Click += new System.EventHandler(this.btnIn_Click);
+      
             // 
             // btnSapXepBC
             // 
@@ -84,7 +99,7 @@
             this.btnSapXepBC.TabIndex = 3;
             this.btnSapXepBC.Text = "Sắp xếp theo số lượng";
             this.btnSapXepBC.UseVisualStyleBackColor = true;
-            this.btnSapXepBC.Click += new System.EventHandler(this.btnSapXepBC_Click);
+     
             // 
             // grpThongKe
             // 
@@ -92,23 +107,22 @@
             this.grpThongKe.Controls.Add(this.radGioiTinh);
             this.grpThongKe.Controls.Add(this.radPhongBan);
             this.grpThongKe.ForeColor = System.Drawing.SystemColors.MenuHighlight;
-            this.grpThongKe.Location = new System.Drawing.Point(320, 22);
+            this.grpThongKe.Location = new System.Drawing.Point(12, 299);
             this.grpThongKe.Name = "grpThongKe";
             this.grpThongKe.Size = new System.Drawing.Size(200, 100);
             this.grpThongKe.TabIndex = 4;
             this.grpThongKe.TabStop = false;
             this.grpThongKe.Text = "Thống kê theo";
             // 
-            // radPhongBan
+            // btnThongKe
             // 
-            this.radPhongBan.AutoSize = true;
-            this.radPhongBan.Location = new System.Drawing.Point(7, 20);
-            this.radPhongBan.Name = "radPhongBan";
-            this.radPhongBan.Size = new System.Drawing.Size(77, 17);
-            this.radPhongBan.TabIndex = 0;
-            this.radPhongBan.TabStop = true;
-            this.radPhongBan.Text = "Phòng ban";
-            this.radPhongBan.UseVisualStyleBackColor = true;
+            this.btnThongKe.Location = new System.Drawing.Point(7, 67);
+            this.btnThongKe.Name = "btnThongKe";
+            this.btnThongKe.Size = new System.Drawing.Size(75, 23);
+            this.btnThongKe.TabIndex = 2;
+            this.btnThongKe.Text = "Thống kê";
+            this.btnThongKe.UseVisualStyleBackColor = true;
+            this.btnThongKe.Click += new System.EventHandler(this.btnThongKe_Click);
             // 
             // radGioiTinh
             // 
@@ -121,30 +135,16 @@
             this.radGioiTinh.Text = "Giới tính";
             this.radGioiTinh.UseVisualStyleBackColor = true;
             // 
-            // btnThongKe
+            // radPhongBan
             // 
-            this.btnThongKe.Location = new System.Drawing.Point(7, 67);
-            this.btnThongKe.Name = "btnThongKe";
-            this.btnThongKe.Size = new System.Drawing.Size(75, 23);
-            this.btnThongKe.TabIndex = 2;
-            this.btnThongKe.Text = "Thống kê";
-            this.btnThongKe.UseVisualStyleBackColor = true;
-            this.btnThongKe.Click += new System.EventHandler(this.btnThongKe_Click);
-            // 
-            // PhongBan
-            // 
-            this.PhongBan.HeaderText = "Phân loại";
-            this.PhongBan.Name = "PhongBan";
-            // 
-            // SoLuong
-            // 
-            this.SoLuong.HeaderText = "Số lượng nhân viên";
-            this.SoLuong.Name = "SoLuong";
-            // 
-            // TiLe
-            // 
-            this.TiLe.HeaderText = "Tỉ lệ %";
-            this.TiLe.Name = "TiLe";
+            this.radPhongBan.AutoSize = true;
+            this.radPhongBan.Location = new System.Drawing.Point(7, 20);
+            this.radPhongBan.Name = "radPhongBan";
+            this.radPhongBan.Size = new System.Drawing.Size(77, 17);
+            this.radPhongBan.TabIndex = 0;
+            this.radPhongBan.TabStop = true;
+            this.radPhongBan.Text = "Phòng ban";
+            this.radPhongBan.UseVisualStyleBackColor = true;
             // 
             // btnXuatWord
             // 
@@ -154,7 +154,7 @@
             this.btnXuatWord.TabIndex = 5;
             this.btnXuatWord.Text = "Xuất Word";
             this.btnXuatWord.UseVisualStyleBackColor = true;
-            this.btnXuatWord.Click += new System.EventHandler(this.btnXuatWord_Click);
+    
             // 
             // frmBaoCao
             // 
@@ -169,7 +169,7 @@
             this.Controls.Add(this.dgvThongKe);
             this.Name = "frmBaoCao";
             this.Text = "frmBaoCao";
-            this.Load += new System.EventHandler(this.frmBaoCao_Load);
+           
             ((System.ComponentModel.ISupportInitialize)(this.dgvThongKe)).EndInit();
             this.grpThongKe.ResumeLayout(false);
             this.grpThongKe.PerformLayout();

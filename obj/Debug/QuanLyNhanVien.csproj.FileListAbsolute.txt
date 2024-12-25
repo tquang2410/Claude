@@ -40,7 +40,6 @@ D:\HocCode\QuanLyNhanVien\bin\Debug\System.Threading.Tasks.Extensions.dll
 D:\HocCode\QuanLyNhanVien\bin\Debug\System.ValueTuple.dll
 D:\HocCode\QuanLyNhanVien\bin\Debug\EnvDTE.dll
 D:\HocCode\QuanLyNhanVien\bin\Debug\stdole.dll
-D:\HocCode\QuanLyNhanVien\bin\Debug\Microsoft.MSXML.dll
 D:\HocCode\QuanLyNhanVien\bin\Debug\ClosedXML.pdb
 D:\HocCode\QuanLyNhanVien\bin\Debug\ClosedXML.xml
 D:\HocCode\QuanLyNhanVien\bin\Debug\ClosedXML.Parser.xml

@@ -93,18 +93,25 @@ namespace QuanLyNhanVien.Forms
             {
                 dgvPhongBan.Rows.Clear();
 
-                if (listPB != null)
+                // Tính số nhân viên của từng phòng
+                var fileAccessNV = new FileAccess();
+                var listNV = fileAccessNV.LoadData();
+
+                foreach (var pb in listPB)
                 {
-                    foreach (var pb in listPB.Where(x => x != null))
-                    {
-                        dgvPhongBan.Rows.Add(
-                            pb.MaPhong,
-                            pb.TenPhong,
-                            pb.MoTa,
-                            pb.SoNhanVien
-                        );
-                    }
+                    int soNV = listNV.Count(x => x.PhongBan == pb.TenPhong);
+                    pb.SoNhanVien = soNV; // Cập nhật số nhân viên
+
+                    dgvPhongBan.Rows.Add(
+                        pb.MaPhong,
+                        pb.TenPhong,
+                        pb.MoTa,
+                        soNV
+                    );
                 }
+
+                // Lưu lại số liệu đã cập nhật
+                fileAccess.SaveData(listPB);
             }
             catch (Exception ex)
             {
@@ -283,5 +290,8 @@ namespace QuanLyNhanVien.Forms
         {
             SetControlStatus(false);
         }
+
+     
+
     }
 }
